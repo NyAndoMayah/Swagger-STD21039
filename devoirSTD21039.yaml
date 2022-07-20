@@ -1,0 +1,359 @@
+openapi: 3.0.1
+info:
+  title: STD21039
+  description: Hello world
+  version: 0.1.9
+servers:
+- url: https://std21039.com
+tags:
+- name: Students
+  description: All about students
+- name: Courses
+  description: All about the courses
+paths:
+  /students:
+    get:
+      tags:
+      - Students
+      summary: Returns all the students
+      operationId: getStudents
+      parameters:
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type : integer
+            example : 1
+            minimum: 1
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+              type : integer
+              example : 1
+              minimum: 1
+      responses:
+        200 :
+          description : OK
+          content:
+            application/json:
+              schema:
+                type : array 
+                items :
+                  $ref : '#/components/schemas/StudentsWithID'
+        400:
+          description: Bad request
+          content: 
+            application/json:
+              schema:
+                $ref : '#/components/schemas/404_Error' 
+    post:
+      tags:
+      - Students
+      summary: Add a new student
+      operationId: addStudent
+      requestBody:
+        description: Add a new student
+        content:
+          application/json:
+            schema:
+              $ref : '#/components/schemas/Students'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/StudentsWithID'
+        400:
+          description: Bad request
+          content: 
+            application/json:
+              schema:
+                $ref : '#/components/schemas/404_Error' 
+
+  /students/{id}:
+    get:
+      tags:
+        - Students
+      summary: Get a student by his Id
+      operationId: getAStudent
+      parameters:
+        - name: Id
+          in: path
+          required: true
+          schema:
+            type : integer
+            example : 1
+            minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/StudentsWithID'
+        400:
+          description: Invalid input
+          content: 
+            application/json:
+              schema:
+                $ref : '#/components/schemas/404_Error' 
+    delete:
+      tags:
+        - Students
+      summary: Delete a student
+      operationId: deleteStudent
+      parameters:
+        - name: Id
+          in: path
+          required: true
+          schema:
+            type : integer
+            example : 1
+            minimum: 1
+      responses:
+        200:
+          description: OK
+        400:
+          description: Invalid input
+          content: 
+            application/json:
+              schema:
+                $ref : '#/components/schemas/404_Error' 
+    put:
+      tags:
+        - Students
+      summary: Modify all the informations about a student
+      operationId: putStudent
+      parameters:
+        - name: Id
+          in: path
+          required: true
+          schema:
+            type : integer
+            example : 1
+            minimum: 1    
+      requestBody:
+        description: Modify all the informations about a student
+        content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Students'
+      responses:
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref : '#/components/schemas/StudentsWithID'
+        400:
+          description: Invalid input
+          content: 
+            application/json:
+              schema:
+                $ref : '#/components/schemas/404_Error'
+    patch: 
+      tags:
+        - Students 
+      summary: Modify the name of a Student known by id
+      operationId: patchStudent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+              type : integer
+              example : 1
+              minimum: 1
+      requestBody:
+        description: Update a student with properties to be changed
+        content:
+          application/json:
+            schema:
+              type : object
+              properties:
+                name : 
+                  type : string
+                  example: "Peter"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                required:
+                  - id
+                  - name
+                  - birth_date
+                properties:
+                  id:
+                    type: integer
+                    example: 10
+                  name:
+                    type: string
+                    example: "John"
+                  birth_date:
+                    type: string
+                    format : date  
+        400:
+            description: Invalid input
+            content: 
+              application/json:
+                schema:
+                  $ref : '#/components/schemas/404_Error'
+
+  /courses:
+    get:
+      tags:
+      - Courses
+      summary: List of courses
+      operationId: getCourses
+      parameters:
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type : integer
+            example : 1
+            minimum: 1
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+              type : integer
+              example : 1
+              minimum: 1
+      responses :
+        200 : 
+          description: List courses
+          content:
+            application/json:
+              schema:
+                type : array
+                items :
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 6
+                    name:
+                      type: string
+                      example: "Mathematics"
+        400:
+          description: Bad request
+          content:
+             application/json:
+              schema:
+                $ref : '#/components/schemas/404_Error' 
+    post:
+      tags :
+        - Courses 
+      summary : Create new courses
+      operationId : createCourse
+      requestBody :
+        description : Create new courses
+        content :
+          application/json :
+            schema :
+              type : object 
+              properties :
+                name : 
+                  type : string 
+                  example : "Sciences"
+                teacher :
+                  type : string
+                  example : "Jack"
+                createdDateTime :
+                  type : string
+                  format : date
+      responses :
+        400 : 
+          description : Bad request
+          content : 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code :
+                    type: string
+                    example: "400-BAD-REQUEST"
+                  
+  /courses/{id}:
+    get:
+      tags:
+        - Courses
+      summary : Specified course
+      operationId: getCourseById
+      parameters:
+        - name : id
+          in: path
+          required: true
+          schema :
+            type: integer
+            example : 6
+      responses :
+        200 :
+          description: Course
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    name : 
+                      type : string 
+                      example : "Sciences"
+                    teacher :
+                      type : string
+                      example : "Jack"
+                    createdDateTime :
+                      type : string
+                      format : date
+        400 :
+          description : Bad request
+          content : 
+            application/json:
+              schema:
+                $ref : "#/components/schemas/404_Error"
+components :
+  schemas :
+    Students :
+      type: object
+      properties :
+          name:
+            type: string
+            example: "John"
+          birth_date:
+            type: string
+            format : date 
+    StudentsWithID:
+      type: object
+      properties :
+          id:
+            type: integer
+            example: 10
+          name:
+            type: string
+            example: "John"
+          birth_date:
+            type: string
+            format : date  
+    404_Error :
+      type: object
+      properties:
+          code :
+            type: string
+            example: "400-BAD-REQUEST"
+          message :
+            type: string
+            example: "Parameters are invalid"  
+      
+    
+
+      
+      
+              
+          
+        
