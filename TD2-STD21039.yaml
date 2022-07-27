@@ -1,0 +1,659 @@
+openapi: 3.0.1
+info:
+  title: STD21039
+  description: The weekly screening schedule
+  version: 0.1.9
+servers:
+- url: https://std21039.com
+tags:
+- name: Rooms
+  description: All about the room where the film is projected
+- name: Movies
+  description: All about the movies
+- name: Projections
+  description: All about the projections
+- name : Category
+  description: All about the caegories of the films
+paths:
+  /rooms:
+    get: 
+      tags: 
+      -  Rooms
+      summary: Returns all the rooms
+      operationId: getRooms
+      parameters:
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            example: 2
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+              type : integer
+              example : 1
+              minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/RoomsArray"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    post:
+      tags: 
+        - Rooms
+      summary : Add new room(s)
+      operationId: addRoom
+      requestBody:
+        description: Add one or many rooms
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: 
+                    type: string
+                    example: "A"   
+                  capacity:
+                    type: integer
+                    example: 30  
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/RoomsArray"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    put:
+      tags:
+        -  Rooms
+      summary: Modify all informations about one or more than one room
+      operationId: putRooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomsArray"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/RoomsArray"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    patch:
+      tags: 
+        - Rooms
+      summary: Modify some informations about one room
+      operationId: patchRoom
+      description: |
+        You can modify these informations :
+          * the id of the room
+          * the capacitySize of the room
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/RoomsSingle"
+            examples:
+              changeId:
+                summary: Change th id
+                value:
+                  id: "A"
+              changeCapacity:
+                summary: Change capacity of rooms
+                value:
+                  capacity: 30
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/RoomsSingle"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    delete:
+      tags: 
+        - Rooms
+      summary: Delete room(s)
+      operationId: deleteRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: 
+                    type: string
+                    example: A     
+      responses:
+        200: 
+          description: OK
+        400:
+          description: "BAD_REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+  /rooms/{id}:  
+    get:
+      tags:
+        - "Rooms"
+      summary: Get room by Id
+      operationId: getRommById
+      parameters: 
+        - name: Id
+          in: query
+          schema:
+            type: string
+            example: "A"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomsSingle"
+        400:
+          description: "BAD_REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+  /movies:
+    get: 
+      tags: 
+      -  Movies
+      summary: Returns all the movies
+      operationId: getMovies
+      parameters:
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            example: 2
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+              type : integer
+              example : 1
+              minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/MoviesArray"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    post:
+      tags: 
+        - Movies
+      summary : Add new movie(s)
+      operationId: addMovie
+      requestBody:
+        description: Add one or many rooms
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: 
+                    type: integer
+                    example: 1   
+                  category :
+                    type: string
+                    enum:
+                    - Tragedy
+                    - Comedy
+                    - Love
+                    - Adventure 
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/MoviesArray"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"           
+    put:
+      tags:
+        -  Movies
+      summary: Modify all informations about one or more than one movies
+      operationId: putRooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoviesArray"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/MoviesArray"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    patch:
+      tags: 
+        - Movies
+      summary: Modify some informations about one room
+      operationId: patchRoom
+      description: |
+        You can modify these informations :
+          * the id of the room
+          * the category of the room
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/MoviesSingle"
+            examples:
+              changeId:
+                summary: Change the id
+                value:
+                  id: 1
+              changeCategory:
+                summary: Change category of rooms
+                value:
+                  capacity: "Comedy"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/MoviesSingle"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+  /movies/{id}:
+    get:
+      tags:
+        - "Movies"
+      summary: Get movie by Id
+      operationId: getMovieById
+      parameters: 
+        - name: Id
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoviesSingle"
+        400:
+          description: "BAD_REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    delete:
+      tags: 
+        - Movies
+      summary: Delete movie(s)
+      operationId: deleteMovies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: 
+                    type: integer
+                    example: 10    
+      responses:
+        200: 
+          description: OK
+        400:
+          description: "BAD_REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+  /categories:
+    get:
+      tags:
+        - "Movies"
+      summary: Returns the movies by categories
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - Comedy
+              - Tragedy
+              - Love
+              - Adventure
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoviesByCategory"
+        400:
+          description: "BAD_REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    post:
+      tags: 
+        - Movies
+      summary: add a film which have the category
+      operationId: addMovie
+      requestBody:
+        description: Add one or many films
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: 
+                    type: integer
+                    example: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/MoviesByCategory"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"   
+    patch: 
+      tags: 
+        - Movies
+      summary: Modify some informations about one category
+      operationId: patchRoom
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/MoviesByCategory"
+            examples:
+              changeId:
+                summary: Change the name
+                value:
+                  name: Tragedy
+              changeCapacity:
+                summary: Change the movies
+                value:
+                  movies: The film
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                   $ref: "#/components/schemas/MoviesByCategory"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+  /projections:
+    get: 
+      tags: 
+      -  Projections
+      summary: Returns all the projections
+      operationId: getProjections
+      parameters:
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            example: 2
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+              type : integer
+              example : 1
+              minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json: 
+              schema:
+                type: array
+                items:
+                   $ref: "#/components/schemas/Projection"
+        400:
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Badrequest"
+    put:
+      tags:
+        - "Projection"
+      summary: allows you to modify projection data except its id
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        description: new projection
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProjection'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projection'
+        400:
+          description: Error
+          content: {}
+    delete:
+      tags:
+        - "Projection"
+      summary: deletes a projection by referring to its id
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Returns the id of the deleted projection"
+
+        400:
+          description: Error
+          content: {}
+components:
+  schemas:
+    RoomsArray:
+      type: array
+      items: 
+        type: object
+        properties:
+          id: 
+            type: string
+            example : "A"
+          capacity:
+            type: integer
+            example: 30
+    RoomsSingle:
+        type: object
+        properties:
+          id: 
+            type: string
+            example : "A"
+          capacity:
+            type: integer
+            example: 30
+    MoviesArray:
+      type: array
+      items: 
+        type: object
+        properties:
+          id: 
+            type: integer
+            example : 1
+          category:
+            type: string
+            enum:
+              - Tragedy
+              - Comedy
+              - Love
+              - Adventure
+    MoviesSingle:
+        type: object
+        properties:
+          id: 
+            type: integer
+            example : 1
+          category:
+            type: string
+            enum:
+              - Tragedy
+              - Comedy
+              - Love
+              - Adventure
+    MoviesByCategory:
+        type: object
+        properties: 
+          name:
+            type: string
+            enum:
+              - Tragedy
+              - Comedy
+              - Love
+              - Adventure
+          films:
+            type: array
+            items: 
+              type: object
+              properties:
+                id: 
+                  type: integer
+                  example : 1
+    Projection:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 1
+        film: 
+          type: string
+          example : "The film"
+        Idroom: 
+          type: string
+          example: "A"
+    Badrequest:
+        type: object
+        properties:
+          code: 
+            type: string
+            example: "BAD_REQUEST" 
+    NewProjection:
+      type: object
+      properties:
+        filmId:
+          type: integer
+          example: 1
+        roomId:
+          type: string
+          default: A
+          enum:
+            - A
+            - B
+        hour:
+          type: string
+          format: date-time
+        
+
+
+      
+
+            
+
+
+        
